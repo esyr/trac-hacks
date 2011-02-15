@@ -101,7 +101,7 @@ class BlackMagicTicketTweaks(Component):
         #reset blocked tickets to 0
         self.blockedTickets = 0
         #ticket page
-        if template == "ticket.html":
+        if template in ("ticket.html", "autoquery_ticket.html"):
             #remove ticket types user doesn't have permission to
             fields = data.get("fields")
             i = 0
@@ -261,7 +261,7 @@ class BlackMagicTicketTweaks(Component):
         if filename == "query.html":
             stream |= Transformer('//div[@class="query"]/h1/span[@class="numrows"]/text()').replace("")
 
-        if filename == "ticket.html":
+        if filename in ("ticket.html", "autoquery_ticket.html"):
             for field,e in self.enchants.items():
                 disabled = e["disable"]
                 disable_hidden = e["disable_hidden"]
