@@ -123,7 +123,7 @@ class BlackMagicTicketTweaks(Component):
         #report page        
         if template == "report_view.html":
                     newItems = []
-                    for row in data["row_groups"]:
+                    for row in "row_groups" in data and data["row_groups"] or data:
                         for l in row:
                             if isinstance(l,list):
                               for t in l:
