@@ -96,7 +96,7 @@ class BlackMagicTicketTweaks(Component):
     def pre_process_request(self, req, handler):
         return handler
     def post_process_request(self, req, template, data, content_type):
-        if template == "report_view.html":
+        if template == "report_view.html" and 'numrows' in data:
             data["numrows"]-=self.blockedTickets;
         #reset blocked tickets to 0
         self.blockedTickets = 0
