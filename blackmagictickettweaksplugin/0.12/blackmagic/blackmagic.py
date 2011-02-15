@@ -258,8 +258,8 @@ class BlackMagicTicketTweaks(Component):
 
     def filter_stream(self, req, method, filename, stream, data):
         #remove matches from custom queries due to the fact ticket permissions are checked after this stream is manipulated so the count cannot be updated.
-        if filename == "query.html":
-            stream |= Transformer('//div[@class="query"]/h1/span[@class="numrows"]/text()').replace("")
+        #if filename == "query.html":
+        #    stream |= Transformer('//div[@class="query"]/h1/span[@class="numrows"]/text()').replace("")
 
         if filename in ("ticket.html", "autoquery_ticket.html"):
             for field,e in self.enchants.items():
