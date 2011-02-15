@@ -46,6 +46,7 @@ class BlackMagicTicketTweaks(Component):
             self.enchants[e]["permission"]=self.config.get('blackmagic', '%s.permission' % e, '').upper()
             self.enchants[e]["disable"]=self.config.get('blackmagic','%s.disable' % e, False)
             self.enchants[e]["hide"]=self.config.get('blackmagic','%s.hide' % e, False)
+            self.enchants[e]["disable_hidden"]=self.config.get('blackmagic','%s.disable_hidden' % e, False)
             self.enchants[e]["label"]=self.config.get('blackmagic','%s.label' % e, None)
             self.enchants[e]["notice"]=self.config.get('blackmagic','%s.notice' % e, None)
             self.enchants[e]["tip"]=self.config.get('blackmagic', '%s.tip' % e, None)
@@ -263,6 +264,7 @@ class BlackMagicTicketTweaks(Component):
         if filename == "ticket.html":
             for field,e in self.enchants.items():
                 disabled = e["disable"]
+                disable_hidden = e["disable_hidden"]
                 hidden = e["hide"]
                 #permissions are set for field
                 if e["permission"] != "" and not hidden and not (disabled or disabled and e["ondenial"]=="hide"):
@@ -282,18 +284,26 @@ class BlackMagicTicketTweaks(Component):
                         if denial:
                             if denial == "disable":
                                 disabled = True
+                            if denial == "disable_hidden":
+                                disable_hidden = True
                             elif denial == "hide":
                                 hidden = True
                             else:
                                 disabled = True
                         else:
-                                disabled = True
+                            disabled = True
 
                 #hide fields
                 if hidden:
                     #replace th and td in previews with empty tags
                     stream = stream | Transformer('//th[@id="h_%s"]' % field).replace(tag.th(" "))
                     stream = stream | Transformer('//td[@headers="h_%s"]' % field).replace(tag.td(" "))
+                    #replace labels and fields with blank space
+                    stream = stream | Transformer('//label[@for="field-%s"]' % field).replace(" ")
+                    stream = stream | Transformer('//*[@id="field-%s"]' % field).replace(" ")
+
+                #hide disabled fields
+                if disable_hidden or istrue(self.config.get('blackmagic', '%s.disable_hidden' % field, None)):
                     #replace labels and fields with blank space
                     stream = stream | Transformer('//label[@for="field-%s"]' % field).replace(" ")
                     stream = stream | Transformer('//*[@id="field-%s"]' % field).replace(" ")
